@@ -47,6 +47,8 @@
   .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--fondo);}
   .logo-mi{display:flex;align-items:center;gap:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:1px;}
   .logo-flame{width:22px;height:22px;}
+  .logo-icon-wrap{display:inline-flex;align-items:center;}
+  .logo-icon-wrap img{width:22px;height:22px;object-fit:contain;}
   .bell{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.06);}
 
   /* ===== INICIO ===== */
@@ -121,7 +123,11 @@
   .resumen-title{padding:6px 16px 10px;font-size:15px;color:var(--negro);}
   .donuts-row{display:flex;gap:12px;padding:0 16px 16px;}
   .donut-card{flex:1;background:#fff;border-radius:16px;padding:16px 12px;text-align:center;box-shadow:0 2px 10px rgba(20,20,40,.04);}
+  .donut-card-wide{background:#fff;border-radius:16px;margin:0 16px 16px;padding:24px 16px;text-align:center;box-shadow:0 2px 10px rgba(20,20,40,.04);}
   .donut-wrap{width:84px;height:84px;margin:0 auto 10px;position:relative;}
+  .donut-wrap-lg{width:140px;height:140px;margin:0 auto 14px;position:relative;}
+  .donut-wrap-lg svg{transform:rotate(-90deg);}
+  .donut-pct-lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;}
   .donut-wrap svg{transform:rotate(-90deg);}
   .donut-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;}
   .donut-label{font-weight:700;font-size:14px;font-family:'Inter',sans-serif;text-transform:none;margin-bottom:4px;}
@@ -180,7 +186,9 @@
 
   /* ===== PERFIL ===== */
   .perfil-banner{height:130px;background:linear-gradient(135deg,#C9CEF5,#E3E6FB);position:relative;display:flex;align-items:flex-end;justify-content:center;}
-  .perfil-avatar{width:110px;height:110px;border-radius:50%;background:#D9DCEC;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:46px;position:absolute;bottom:-50px;}
+  .perfil-avatar{width:110px;height:110px;border-radius:50%;background:#D9DCEC;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:46px;position:absolute;bottom:-50px;overflow:hidden;}
+  .perfil-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+  .avatar-fallback{display:flex;align-items:center;justify-content:center;width:100%;height:100%;}
   .perfil-info{text-align:center;padding:64px 24px 0;}
   .perfil-nombre{color:var(--rojo);font-size:20px;margin-bottom:4px;}
   .perfil-carrera{font-size:14px;color:#5C6470;margin-bottom:10px;font-weight:600;}
@@ -243,9 +251,12 @@
     <div class="topbar">
       <div class="logo-mi">
         MI ACADEMIA
-        <svg class="logo-flame" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50 5C35 25 30 40 35 55C28 50 25 42 26 35C18 45 15 60 25 75C35 88 50 92 60 88C75 82 85 68 80 50C77 60 70 65 65 65C72 50 70 30 50 5Z" fill="#E30613"/>
-        </svg>
+        <span class="logo-icon-wrap">
+          <img src="logo.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-block';">
+          <svg class="logo-flame" style="display:none;" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M50 5C35 25 30 40 35 55C28 50 25 42 26 35C18 45 15 60 25 75C35 88 50 92 60 88C75 82 85 68 80 50C77 60 70 65 65 65C72 50 70 30 50 5Z" fill="#E30613"/>
+          </svg>
+        </span>
       </div>
       <div class="bell">🔔</div>
     </div>
@@ -351,27 +362,19 @@
     </div>
 
     <div class="resumen-title">RESUMEN CUMPLIMIENTO DE CRÉDITOS ELECTIVOS</div>
-    <div class="donuts-row">
-      <div class="donut-card" style="flex:0.5"></div>
-      <div class="donut-card">
-        <div class="donut-wrap"><div id="donutElec"></div><div class="donut-pct" id="donutElecPct">0%</div></div>
-        <div class="donut-label">Créditos</div>
-        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="elecCumplido">0</b></div>
-        <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>Mínimo: <b id="elecTotal">30</b></div>
-      </div>
-      <div class="donut-card" style="flex:0.5"></div>
+    <div class="donut-card-wide">
+      <div class="donut-wrap-lg"><div id="donutElec"></div><div class="donut-pct-lg" id="donutElecPct">0%</div></div>
+      <div class="donut-label">Créditos</div>
+      <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="elecCumplido">0</b></div>
+      <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>Mínimo: <b id="elecTotal">30</b></div>
     </div>
 
     <div class="resumen-title">RESUMEN CUMPLIMIENTO TOTAL DE LA CARRERA</div>
-    <div class="donuts-row">
-      <div class="donut-card" style="flex:0.5"></div>
-      <div class="donut-card">
-        <div class="donut-wrap"><div id="donutTotal"></div><div class="donut-pct" id="donutTotalPct">0%</div></div>
-        <div class="donut-label">Créditos totales</div>
-        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="totCumplido">0</b></div>
-        <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>A cumplir: <b id="totTotal">200</b></div>
-      </div>
-      <div class="donut-card" style="flex:0.5"></div>
+    <div class="donut-card-wide">
+      <div class="donut-wrap-lg"><div id="donutTotal"></div><div class="donut-pct-lg" id="donutTotalPct">0%</div></div>
+      <div class="donut-label">Créditos totales</div>
+      <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="totCumplido">0</b></div>
+      <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>A cumplir: <b id="totTotal">200</b></div>
     </div>
 
     <div class="info-box">
@@ -527,7 +530,10 @@
   <!-- ============ PERFIL ============ -->
   <div class="pantalla" id="pantalla-perfil">
     <div class="perfil-banner">
-      <div class="perfil-avatar">🎓</div>
+      <div class="perfil-avatar">
+      <img src="foto-perfil.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <span class="avatar-fallback">🎓</span>
+    </div>
     </div>
     <div class="perfil-info">
       <div class="perfil-nombre titulo" id="perfilNombre">CARLOS</div>
@@ -540,7 +546,7 @@
       <div>Créditos obligatorios: <b>170</b> · Electivos: <b>30</b></div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="display:none;">
       <label>Editar nombre</label>
       <input type="text" id="perfilNombreInput" oninput="actualizarNombre()">
     </div>

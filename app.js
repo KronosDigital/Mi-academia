@@ -139,12 +139,13 @@ function calcularResumen(){
 }
 
 // ---------------- Donut SVG ----------------
-function dibujarDonut(containerId, pct, color){
-  const r = 36, cx=42, cy=42, stroke=10;
+function dibujarDonut(containerId, pct, color, size=84){
+  const r = size===84 ? 36 : 60, stroke = size===84 ? 10 : 14;
+  const cx = size/2, cy = size/2;
   const c = 2*Math.PI*r;
   const offset = c - (pct/100)*c;
   const svg = `
-    <svg width="84" height="84" viewBox="0 0 84 84">
+    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E6E8F0" stroke-width="${stroke}"/>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
         stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
@@ -199,14 +200,14 @@ function renderSituacion(){
 
   // Donut electivos
   const pctElec = r.totalCredElectivos ? (r.credElectivosCumplidos/r.totalCredElectivos*100) : 0;
-  dibujarDonut('donutElec', Math.min(pctElec,100), '#3FB54A');
+  dibujarDonut('donutElec', Math.min(pctElec,100), '#3FB54A', 140);
   document.getElementById('donutElecPct').textContent = pctElec.toFixed(2)+'%';
   document.getElementById('elecCumplido').textContent = r.credElectivosCumplidos;
   document.getElementById('elecTotal').textContent = r.totalCredElectivos;
 
   // Donut total carrera
   const pctTotal = r.totalCredCarrera ? (r.credTotalCumplido/r.totalCredCarrera*100) : 0;
-  dibujarDonut('donutTotal', pctTotal, '#3F2DA5');
+  dibujarDonut('donutTotal', pctTotal, '#3F2DA5', 140);
   document.getElementById('donutTotalPct').textContent = pctTotal.toFixed(1)+'%';
   document.getElementById('totCumplido').textContent = r.credTotalCumplido;
   document.getElementById('totTotal').textContent = r.totalCredCarrera;
