@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#E30613">
+<title>Mi Academia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --rojo:#E30613;
+    --rojo-claro:#FFE7E9;
+    --morado:#3F2DA5;
+    --morado-claro:#EDEBFA;
+    --verde:#3FB54A;
+    --verde-claro:#D9F2DC;
+    --naranja:#FF9D2E;
+    --fondo:#F4F5FA;
+    --gris-texto:#5C6470;
+    --gris-claro:#E6E8F0;
+    --blanco:#FFFFFF;
+    --negro:#22252B;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;font-family:'Inter',sans-serif;background:var(--fondo);color:var(--negro);}
+  #app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--fondo);position:relative;padding-bottom:78px;}
+  h1,h2,h3,.titulo{font-family:'Oswald',sans-serif;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+  .pantalla{display:none;animation:fadein .25s ease;}
+  .pantalla.activa{display:block;}
+  @keyframes fadein{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ===== LOGIN ===== */
+  #login{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px 32px;text-align:center;background:var(--blanco);}
+  .login-icon{width:90px;height:90px;margin-bottom:24px;}
+  #login h1.bienvenida{color:var(--rojo);font-size:28px;margin:0 0 16px;}
+  #login p.sub{color:var(--gris-texto);font-size:15px;line-height:1.5;margin:0 0 36px;}
+  .btn-rojo{background:var(--rojo);color:#fff;border:none;border-radius:30px;padding:16px;font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;letter-spacing:1px;width:100%;cursor:pointer;text-transform:uppercase;}
+  .login-input{width:100%;padding:14px 16px;border:1px solid var(--gris-claro);border-radius:12px;margin-bottom:12px;font-size:15px;font-family:'Inter',sans-serif;}
+  .login-input:focus{outline:2px solid var(--morado);border-color:var(--morado);}
+  .link-morado{color:var(--morado);font-weight:600;text-decoration:none;font-size:14px;}
+
+  /* ===== HEADER / TOPBAR ===== */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--fondo);}
+  .logo-mi{display:flex;align-items:center;gap:6px;font-family:'Oswald',sans-serif;font-weight:700;font-size:18px;letter-spacing:1px;}
+  .logo-flame{width:22px;height:22px;}
+  .bell{width:38px;height:38px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.06);}
+
+  /* ===== INICIO ===== */
+  .saludo{padding:8px 20px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .saludo h2{margin:0;font-size:26px;line-height:1.15;}
+  .saludo .hola{color:var(--rojo);font-size:18px;text-transform:none;font-weight:400;font-family:'Inter',sans-serif;}
+  .saludo .nombre{color:var(--rojo);}
+  .saludo p{margin:6px 0 0;color:var(--gris-texto);font-size:14px;text-transform:none;font-weight:400;font-family:'Inter',sans-serif;}
+  .saludo-img{width:90px;flex-shrink:0;}
+
+  .card{background:#fff;border-radius:18px;margin:0 16px 16px;padding:18px;box-shadow:0 2px 10px rgba(20,20,40,.04);}
+  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .card-header .izq{display:flex;align-items:center;gap:10px;}
+  .card-header .icono{font-size:24px;}
+  .card-header h3{margin:0;font-size:17px;}
+  .ver-todo{color:var(--morado);font-weight:600;font-size:13px;text-decoration:none;display:flex;align-items:center;gap:3px;font-family:'Inter',sans-serif;text-transform:none;}
+
+  .pill-row{display:flex;gap:8px;margin-bottom:14px;}
+  .pill{border-radius:30px;padding:8px 14px;font-size:13px;font-weight:600;border:1px solid var(--rojo);color:var(--rojo);background:#fff;}
+  .pill.activa{background:var(--rojo);color:#fff;}
+  .sin-clases{text-align:center;color:var(--gris-texto);font-size:14px;padding:10px 0 2px;}
+  .sin-clases .circulo{width:34px;height:34px;border-radius:50%;background:#C9CEDC;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;}
+
+  .badge-virtual{display:inline-block;background:var(--verde-claro);color:var(--verde);font-weight:700;font-size:11px;border-radius:6px;padding:3px 8px;text-transform:uppercase;margin-bottom:8px;}
+  .badge-semi{display:inline-block;background:#FFE2E2;color:#E0524A;font-weight:700;font-size:11px;border-radius:6px;padding:3px 8px;text-transform:uppercase;margin-bottom:8px;}
+  .curso-nombre{font-size:15px;font-weight:700;font-family:'Inter',sans-serif;text-transform:none;margin-bottom:6px;}
+  .ver-detalle{color:var(--morado);font-weight:600;font-size:13px;text-decoration:none;text-transform:none;font-family:'Inter',sans-serif;}
+  .dots{display:flex;justify-content:center;gap:5px;margin-top:10px;}
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--gris-claro);}
+  .dot.activo{background:var(--rojo);}
+
+  .explora-title{padding:6px 20px 12px;font-size:18px;}
+  .explora-grid{display:flex;gap:12px;padding:0 16px 16px;}
+  .explora-item{flex:1;background:#fff;border-radius:16px;padding:18px 10px;text-align:center;box-shadow:0 2px 10px rgba(20,20,40,.04);font-weight:600;font-size:14px;font-family:'Inter',sans-serif;text-transform:none;}
+  .explora-item .em{font-size:30px;display:block;margin-bottom:8px;}
+
+  .portal-banner{margin:0 16px 16px;background:var(--rojo-claro);border:1px solid #FFC8CC;border-radius:16px;padding:16px;display:flex;gap:10px;align-items:flex-start;}
+  .portal-banner .em{font-size:22px;}
+  .portal-banner b{color:var(--rojo);}
+  .portal-banner p{margin:4px 0 0;font-size:13px;color:#555;line-height:1.4;}
+  .portal-banner .flecha{margin-left:auto;color:var(--rojo);font-size:20px;align-self:center;}
+
+  /* ===== NAV BAR ===== */
+  .navbar{position:fixed;bottom:0;left:0;right:0;max-width:480px;margin:0 auto;background:#fff;display:flex;border-top:1px solid var(--gris-claro);padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:50;}
+  .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;color:#9AA0AC;font-size:11px;font-weight:600;cursor:pointer;border:none;background:none;font-family:'Inter',sans-serif;position:relative;}
+  .nav-item.activo{color:var(--rojo);}
+  .nav-item.activo::before{content:'';position:absolute;top:-9px;width:30px;height:3px;background:var(--rojo);border-radius:3px;}
+  .nav-item .icn{font-size:22px;}
+
+  /* ===== PAGE HEADER (con back) ===== */
+  .page-header{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--fondo);}
+  .page-header .back{font-size:22px;color:var(--rojo);background:none;border:none;cursor:pointer;padding:4px;}
+  .page-header h1{margin:0;font-size:18px;}
+
+  /* ===== ACADEMICO MENU ===== */
+  .academico-intro{display:flex;align-items:center;gap:14px;padding:10px 20px 20px;}
+  .academico-intro .em{font-size:34px;}
+  .academico-intro p{margin:0;font-size:16px;color:#5C6470;font-weight:500;font-family:'Inter',sans-serif;text-transform:none;}
+  .menu-item{background:#fff;border-radius:16px;margin:0 16px 14px;padding:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(20,20,40,.04);cursor:pointer;border:none;width:calc(100% - 32px);text-align:left;}
+  .menu-item .izq{display:flex;align-items:center;gap:14px;font-size:16px;font-weight:700;}
+  .menu-item .em{font-size:24px;}
+  .menu-item .flecha{color:var(--rojo);font-size:20px;font-weight:700;}
+
+  /* ===== SITUACION ACADEMICA ===== */
+  .sa-card{background:var(--morado-claro);border-radius:16px;margin:0 16px 16px;padding:18px;}
+  .sa-card .carrera{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;color:var(--negro);text-transform:uppercase;}
+  .sa-card .facultad{font-size:13px;color:#6B6F85;margin:2px 0 12px;}
+  .sa-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;color:#444;}
+  .chip{background:var(--morado);color:#fff;font-weight:700;border-radius:8px;padding:2px 10px;font-size:12px;}
+  .chip-out{border:1px solid var(--morado);color:var(--morado);border-radius:8px;padding:2px 10px;font-size:11px;font-weight:700;}
+
+  .resumen-title{padding:6px 16px 10px;font-size:15px;color:var(--negro);}
+  .donuts-row{display:flex;gap:12px;padding:0 16px 16px;}
+  .donut-card{flex:1;background:#fff;border-radius:16px;padding:16px 12px;text-align:center;box-shadow:0 2px 10px rgba(20,20,40,.04);}
+  .donut-wrap{width:84px;height:84px;margin:0 auto 10px;position:relative;}
+  .donut-wrap svg{transform:rotate(-90deg);}
+  .donut-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;}
+  .donut-label{font-weight:700;font-size:14px;font-family:'Inter',sans-serif;text-transform:none;margin-bottom:4px;}
+  .donut-detail{font-size:11px;color:#777;text-transform:none;font-family:'Inter',sans-serif;}
+  .donut-detail .dot-leg{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;}
+
+  .info-box{background:var(--morado-claro);border-radius:16px;margin:0 16px 16px;padding:16px;}
+  .info-box .titulo-mini{font-size:14px;margin-bottom:10px;color:var(--negro);}
+  .info-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;color:#444;border-bottom:1px solid rgba(255,255,255,.5);}
+  .info-row:last-child{border-bottom:none;}
+  .info-row b{color:var(--negro);}
+
+  .select-nivel{display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid var(--gris-claro);border-radius:12px;padding:12px 16px;margin:0 16px 16px;font-size:14px;}
+  .select-nivel select{border:none;background:none;font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;color:var(--negro);width:100%;appearance:none;}
+
+  /* ===== CURSO CARD (lista) ===== */
+  .curso-list-item{background:#fff;border-radius:14px;margin:0 16px 12px;padding:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 10px rgba(20,20,40,.04);cursor:pointer;border:none;width:calc(100% - 32px);text-align:left;}
+  .curso-list-item .info{flex:1;}
+  .curso-list-item .nombre{font-size:14px;font-weight:700;font-family:'Inter',sans-serif;text-transform:uppercase;margin-bottom:6px;line-height:1.3;}
+  .curso-list-item .codigo{font-size:12px;color:#9AA0AC;margin-top:6px;}
+  .curso-list-item .flecha{color:var(--rojo);font-size:18px;}
+  .estado-badge{display:inline-block;font-size:11px;font-weight:700;border-radius:8px;padding:3px 10px;text-transform:uppercase;}
+  .estado-aprobado{background:var(--verde-claro);color:var(--verde);}
+  .estado-pendiente{background:#F0F0F4;color:#9AA0AC;}
+  .estado-cursando{background:#FFF3DC;color:var(--naranja);}
+  .estado-desaprobado{background:#FFE2E2;color:#E0524A;}
+
+  /* ===== DETALLE DE CURSO ===== */
+  .dc-badge{margin:0 20px 10px;}
+  .dc-titulo{padding:0 20px 16px;font-size:22px;line-height:1.25;}
+  .dc-stats{display:flex;gap:10px;padding:0 16px 16px;}
+  .dc-stat{flex:1;background:var(--morado-claro);border-radius:12px;padding:10px;text-align:center;}
+  .dc-stat .label{font-size:11px;color:#6B6F85;margin-bottom:4px;text-transform:none;font-family:'Inter',sans-serif;}
+  .dc-stat .val{font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;}
+  .dc-stat input{width:100%;border:none;background:none;text-align:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;color:var(--negro);}
+
+  .tab-row{display:flex;gap:10px;padding:0 16px 16px;}
+  .tab-btn{flex:1;border-radius:30px;padding:12px;font-weight:700;font-size:14px;border:1px solid var(--rojo);background:#fff;color:var(--rojo);cursor:pointer;font-family:'Inter',sans-serif;text-transform:none;}
+  .tab-btn.activo{background:var(--rojo);color:#fff;}
+
+  .promedio-box{background:#fff;border:1px solid var(--gris-claro);border-radius:16px;margin:0 16px 16px;padding:16px;}
+  .promedio-box .titulo-mini{display:flex;align-items:center;gap:6px;justify-content:center;font-size:15px;margin-bottom:10px;}
+  .promedio-val{background:var(--morado-claro);border-radius:12px;text-align:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:28px;padding:16px;color:var(--morado);}
+  .nota-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--gris-claro);}
+  .nota-item:last-child{border-bottom:none;}
+  .nota-item .izq b{font-size:16px;}
+  .nota-item .izq .desc{font-size:12px;color:#9AA0AC;display:block;margin-top:2px;}
+  .nota-item input{width:54px;text-align:center;border:1px solid var(--gris-claro);border-radius:8px;padding:8px 4px;font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;color:var(--negro);}
+  .formula-box{margin:14px 0 0;padding-top:14px;border-top:1px solid var(--gris-claro);}
+  .formula-box .titulo-mini{font-size:13px;margin-bottom:6px;}
+  .formula-box .formula{font-size:13px;color:#555;line-height:1.4;}
+
+  .estado-select{margin:0 16px 16px;}
+  .estado-select label{display:block;font-size:13px;font-weight:600;margin-bottom:8px;color:#5C6470;}
+  .estado-select select{width:100%;padding:14px;border:1px solid var(--gris-claro);border-radius:12px;font-family:'Inter',sans-serif;font-weight:600;font-size:14px;background:#fff;}
+
+  /* ===== PERFIL ===== */
+  .perfil-banner{height:130px;background:linear-gradient(135deg,#C9CEF5,#E3E6FB);position:relative;display:flex;align-items:flex-end;justify-content:center;}
+  .perfil-avatar{width:110px;height:110px;border-radius:50%;background:#D9DCEC;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:46px;position:absolute;bottom:-50px;}
+  .perfil-info{text-align:center;padding:64px 24px 0;}
+  .perfil-nombre{color:var(--rojo);font-size:20px;margin-bottom:4px;}
+  .perfil-carrera{font-size:14px;color:#5C6470;margin-bottom:10px;font-weight:600;}
+  .perfil-campus{font-size:13px;color:#5C6470;margin-bottom:14px;text-transform:none;font-family:'Inter',sans-serif;}
+  .perfil-codigo{background:var(--morado-claro);border-radius:12px;padding:12px;font-size:13px;color:#444;margin:0 16px 16px;}
+  .perfil-codigo div{margin:4px 0;}
+  .perfil-codigo b{color:var(--negro);}
+  .btn-outline-rojo{border:1px solid var(--rojo);color:var(--rojo);background:#fff;border-radius:30px;padding:14px;font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;letter-spacing:1px;width:calc(100% - 32px);margin:8px 16px 16px;cursor:pointer;text-transform:uppercase;}
+
+  /* ===== EDITAR PERFIL ===== */
+  .form-group{margin:0 16px 14px;}
+  .form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:#5C6470;}
+  .form-group input{width:100%;padding:12px 14px;border:1px solid var(--gris-claro);border-radius:12px;font-size:14px;font-family:'Inter',sans-serif;}
+
+  /* ===== AYUDA ===== */
+  .ayuda-title{padding:14px 20px 4px;color:var(--rojo);font-size:24px;}
+  .ayuda-sub{padding:0 20px 16px;font-size:14px;color:#5C6470;font-weight:500;font-family:'Inter',sans-serif;text-transform:none;}
+  .ayuda-item{background:#fff;border-radius:16px;margin:0 16px 14px;padding:18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(20,20,40,.04);}
+  .ayuda-item .em{font-size:24px;}
+  .ayuda-item .txt b{display:block;font-size:15px;margin-bottom:2px;}
+  .ayuda-item .txt span{font-size:13px;color:#5C6470;font-weight:400;font-family:'Inter',sans-serif;text-transform:none;}
+  .ayuda-item .flecha{margin-left:auto;color:var(--rojo);font-size:20px;}
+  .ayuda-banner{background:var(--morado);color:#fff;border-radius:16px;margin:0 16px 14px;padding:18px;display:flex;align-items:center;gap:14px;}
+  .ayuda-banner b{display:block;font-size:15px;}
+  .ayuda-banner span{font-size:13px;opacity:.85;font-weight:400;text-transform:none;font-family:'Inter',sans-serif;}
+  .ayuda-banner .flecha{margin-left:auto;font-size:20px;}
+
+  /* ===== HORARIOS ===== */
+  .horario-card{background:#fff;border-radius:16px;margin:0 16px 16px;padding:18px;box-shadow:0 2px 10px rgba(20,20,40,.04);}
+  .horario-codigo{font-size:12px;color:#9AA0AC;margin-bottom:8px;}
+  .horario-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#444;margin-top:6px;}
+  .horario-row .punto{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+  /* ===== UTILS ===== */
+  .vacio{text-align:center;padding:60px 30px;color:#9AA0AC;}
+  .vacio .em{font-size:50px;margin-bottom:14px;display:block;}
+  .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--negro);color:#fff;padding:12px 22px;border-radius:30px;font-size:14px;font-weight:600;z-index:100;opacity:0;transition:opacity .3s;pointer-events:none;}
+  .toast.show{opacity:1;}
+  .footer-actions{padding:0 16px 24px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ LOGIN ============ -->
+  <div id="login">
+    <svg class="login-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 5C35 25 30 40 35 55C28 50 25 42 26 35C18 45 15 60 25 75C35 88 50 92 60 88C75 82 85 68 80 50C77 60 70 65 65 65C72 50 70 30 50 5Z" fill="#E30613"/>
+    </svg>
+    <h1 class="bienvenida">¡TE DAMOS LA BIENVENIDA!</h1>
+    <p class="sub">Ingresa a Mi Academia App y registra tu propio avance académico.</p>
+    <input class="login-input" type="text" id="loginNombre" placeholder="Tu nombre">
+    <input class="login-input" type="password" placeholder="Contraseña (cualquier cosa)" value="••••••••">
+    <button class="btn-rojo" onclick="iniciarSesion()" style="margin-top:8px;">Iniciar sesión</button>
+    <p style="margin-top:18px;"><a class="link-morado" href="#" onclick="return false;">Olvidé mi contraseña</a></p>
+  </div>
+
+  <!-- ============ INICIO ============ -->
+  <div class="pantalla" id="pantalla-inicio">
+    <div class="topbar">
+      <div class="logo-mi">
+        MI ACADEMIA
+        <svg class="logo-flame" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 5C35 25 30 40 35 55C28 50 25 42 26 35C18 45 15 60 25 75C35 88 50 92 60 88C75 82 85 68 80 50C77 60 70 65 65 65C72 50 70 30 50 5Z" fill="#E30613"/>
+        </svg>
+      </div>
+      <div class="bell">🔔</div>
+    </div>
+
+    <div class="saludo">
+      <div>
+        <h2><span class="hola">Hola,</span><br><span class="nombre" id="nombreInicio">Carlos</span></h2>
+        <p>¡Te damos la bienvenida!</p>
+      </div>
+      <div class="saludo-img">🎓</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="izq"><span class="icono">🕐</span><h3>HORARIOS</h3></div>
+        <a class="ver-todo" href="#" onclick="irA('horario');return false;">Ver todo &rsaquo;</a>
+      </div>
+      <div class="pill-row">
+        <span class="pill activa" id="pillHoy">Hoy</span>
+        <span class="pill" id="pillManana">Mañana</span>
+      </div>
+      <div class="sin-clases">
+        <div class="circulo">⊝</div>
+        No tienes clases registradas para hoy
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="izq"><span class="icono">📚</span><h3>CURSOS</h3></div>
+        <a class="ver-todo" href="#" onclick="irA('cursos');return false;">Ver todos &rsaquo;</a>
+      </div>
+      <div id="inicioCursoActual">
+        <!-- relleno por JS -->
+      </div>
+      <div class="dots" id="dotsInicio"></div>
+    </div>
+
+    <div class="explora-title">EXPLORA Y DESCUBRE</div>
+    <div class="explora-grid">
+      <div class="explora-item" onclick="irA('academico')"><span class="em">🎓</span>Académico</div>
+      <div class="explora-item" onclick="irA('horario')"><span class="em">📅</span>Horario</div>
+    </div>
+
+    <div class="portal-banner">
+      <span class="em">💻</span>
+      <div>
+        <p><b>¿No encuentras lo que buscas?</b><br>Aquí puedes registrar y editar todo tu avance académico manualmente.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ACADEMICO (menu) ============ -->
+  <div class="pantalla" id="pantalla-academico">
+    <div class="page-header" style="padding-bottom:0;"><h1 style="font-size:22px;">ACADÉMICO</h1></div>
+    <div class="academico-intro">
+      <span class="em">📚</span>
+      <p>Consulta tu avance académico</p>
+    </div>
+    <button class="menu-item" onclick="irA('situacion')">
+      <div class="izq"><span class="em">🎓</span>SITUACIÓN ACADÉMICA</div>
+      <span class="flecha">&rsaquo;</span>
+    </button>
+    <button class="menu-item" onclick="irA('historial')">
+      <div class="izq"><span class="em">📄</span>HISTORIAL DE NOTAS</div>
+      <span class="flecha">&rsaquo;</span>
+    </button>
+    <button class="menu-item" onclick="irA('cursos')">
+      <div class="izq"><span class="em">📖</span>CURSOS / EDITAR NOTAS</div>
+      <span class="flecha">&rsaquo;</span>
+    </button>
+  </div>
+
+  <!-- ============ SITUACION ACADEMICA ============ -->
+  <div class="pantalla" id="pantalla-situacion">
+    <div class="page-header">
+      <button class="back" onclick="irA('academico')">&lsaquo;</button>
+      <h1>SITUACIÓN ACADÉMICA</h1>
+    </div>
+
+    <div class="sa-card">
+      <div class="carrera">Ingeniería Civil</div>
+      <div class="facultad">Fac. Ingeniería</div>
+      <div class="sa-row"><span>Promedio global acumulado:</span> <span class="chip" id="saPromedio">—</span></div>
+      <div class="sa-row"><span>Malla actual:</span> <b>202202</b></div>
+      <div class="sa-row"><span>Periodo:</span> <span class="chip-out">2025-15</span></div>
+    </div>
+
+    <div class="resumen-title">RESUMEN DE CUMPLIMIENTO DE ASIGNATURAS OBLIGATORIAS</div>
+    <div class="donuts-row">
+      <div class="donut-card">
+        <div class="donut-wrap"><div id="donutAsig"></div><div class="donut-pct" id="donutAsigPct">0%</div></div>
+        <div class="donut-label">Asignaturas</div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="asigCumplido">0</b></div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>A cumplir: <b id="asigTotal">50</b></div>
+      </div>
+      <div class="donut-card">
+        <div class="donut-wrap"><div id="donutCred"></div><div class="donut-pct" id="donutCredPct">0%</div></div>
+        <div class="donut-label">Créditos</div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="credCumplido">0</b></div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>A cumplir: <b id="credTotal">170</b></div>
+      </div>
+    </div>
+
+    <div class="resumen-title">RESUMEN CUMPLIMIENTO DE CRÉDITOS ELECTIVOS</div>
+    <div class="donuts-row">
+      <div class="donut-card" style="flex:0.5"></div>
+      <div class="donut-card">
+        <div class="donut-wrap"><div id="donutElec"></div><div class="donut-pct" id="donutElecPct">0%</div></div>
+        <div class="donut-label">Créditos</div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="elecCumplido">0</b></div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>Mínimo: <b id="elecTotal">30</b></div>
+      </div>
+      <div class="donut-card" style="flex:0.5"></div>
+    </div>
+
+    <div class="resumen-title">RESUMEN CUMPLIMIENTO TOTAL DE LA CARRERA</div>
+    <div class="donuts-row">
+      <div class="donut-card" style="flex:0.5"></div>
+      <div class="donut-card">
+        <div class="donut-wrap"><div id="donutTotal"></div><div class="donut-pct" id="donutTotalPct">0%</div></div>
+        <div class="donut-label">Créditos totales</div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="totCumplido">0</b></div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--gris-claro)"></span>A cumplir: <b id="totTotal">200</b></div>
+      </div>
+      <div class="donut-card" style="flex:0.5"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="titulo-mini">INFORMACIÓN ADICIONAL</div>
+      <div class="info-row"><span>Total de créditos aprobados:</span> <b id="infoAprobados">0</b></div>
+      <div class="info-row"><span>Créditos obligatorios pendientes:</span> <b id="infoPendientes">170</b></div>
+      <div class="info-row"><span>Mínimo de créditos electivos por llevar:</span> <b>30</b></div>
+    </div>
+  </div>
+
+  <!-- ============ HISTORIAL DE NOTAS ============ -->
+  <div class="pantalla" id="pantalla-historial">
+    <div class="page-header">
+      <button class="back" onclick="irA('academico')">&lsaquo;</button>
+      <h1>HISTORIAL DE NOTAS</h1>
+    </div>
+
+    <div class="sa-card" style="text-align:center;">
+      <div style="font-size:13px;color:#6B6F85;text-transform:uppercase;font-family:'Oswald',sans-serif;font-weight:700;">Promedio Global Acumulado</div>
+      <div style="font-family:'Oswald',sans-serif;font-weight:700;font-size:40px;color:var(--morado);margin:6px 0;" id="histPromedio">—</div>
+      <div class="carrera" style="font-size:14px;">Ingeniería Civil</div>
+      <div class="facultad" style="margin-bottom:0;">Malla actual: 202202</div>
+    </div>
+
+    <div id="historialPorCiclo"></div>
+  </div>
+
+  <!-- ============ CURSOS (lista por ciclo) ============ -->
+  <div class="pantalla" id="pantalla-cursos">
+    <div class="page-header">
+      <button class="back" onclick="irA('academico')">&lsaquo;</button>
+      <h1>CURSOS</h1>
+    </div>
+    <div class="academico-intro">
+      <span class="em">📖</span>
+      <p>Selecciona un curso para editar tu nota y estado</p>
+    </div>
+    <div class="select-nivel" style="margin-bottom:6px;">
+      <select id="selectCicloCursos" onchange="renderCursosLista()"></select>
+    </div>
+    <div id="listaCursos"></div>
+  </div>
+
+  <!-- ============ DETALLE DE CURSO ============ -->
+  <div class="pantalla" id="pantalla-detalle">
+    <div class="page-header">
+      <button class="back" onclick="irA('cursos')">&lsaquo;</button>
+      <h1>DETALLES DEL CURSO</h1>
+    </div>
+    <div class="dc-badge" id="dcBadge"></div>
+    <div class="dc-titulo titulo" id="dcTitulo"></div>
+
+    <div class="dc-stats">
+      <div class="dc-stat">
+        <div class="label">Créditos</div>
+        <div class="val" id="dcCreditos">-</div>
+      </div>
+      <div class="dc-stat">
+        <div class="label">Ciclo</div>
+        <div class="val" id="dcCiclo">-</div>
+      </div>
+      <div class="dc-stat">
+        <div class="label">Inasistencias</div>
+        <input type="number" min="0" id="dcInasistencias" oninput="guardarDetalle()">
+      </div>
+    </div>
+
+    <div class="estado-select">
+      <label>Estado del curso</label>
+      <select id="dcEstado" onchange="guardarDetalle(); actualizarVistaDetalle();">
+        <option value="pendiente">Pendiente</option>
+        <option value="cursando">Cursando</option>
+        <option value="aprobado">Aprobado</option>
+        <option value="desaprobado">Desaprobado</option>
+      </select>
+    </div>
+
+    <div class="promedio-box">
+      <div class="titulo-mini">PROMEDIO FINAL</div>
+      <div class="promedio-val" id="dcPromedioFinal">—</div>
+
+      <div class="nota-item">
+        <div class="izq"><b>30%</b><span class="desc">DD1 - Evaluación de Desempeño 1</span></div>
+        <input type="number" min="0" max="20" step="0.1" id="notaDD1" oninput="calcularPromedio()">
+      </div>
+      <div class="nota-item">
+        <div class="izq"><b>25%</b><span class="desc">EB1 - Evaluación Final 1</span></div>
+        <input type="number" min="0" max="20" step="0.1" id="notaEB1" oninput="calcularPromedio()">
+      </div>
+      <div class="nota-item">
+        <div class="izq"><b>20%</b><span class="desc">TB1 - Trabajo 1</span></div>
+        <input type="number" min="0" max="20" step="0.1" id="notaTB1" oninput="calcularPromedio()">
+      </div>
+      <div class="nota-item">
+        <div class="izq"><b>25%</b><span class="desc">TB2 - Trabajo 2</span></div>
+        <input type="number" min="0" max="20" step="0.1" id="notaTB2" oninput="calcularPromedio()">
+      </div>
+
+      <div class="formula-box">
+        <div class="titulo-mini">FÓRMULA</div>
+        <div class="formula">30% (DD1) + 25% (EB1) + 20% (TB1) + 25% (TB2)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HORARIO ============ -->
+  <div class="pantalla" id="pantalla-horario">
+    <div class="page-header">
+      <button class="back" onclick="irA('inicio')">&lsaquo;</button>
+      <h1>HORARIO</h1>
+    </div>
+    <div class="vacio">
+      <span class="em">📅</span>
+      No tienes clases registradas.<br>El horario es referencial y no afecta tu avance académico.
+    </div>
+  </div>
+
+  <!-- ============ AYUDA ============ -->
+  <div class="pantalla" id="pantalla-ayuda">
+    <div class="ayuda-title">¿NECESITAS AYUDA?</div>
+    <div class="ayuda-sub">Resuelve tus consultas fácil y rápido</div>
+
+    <div class="ayuda-item">
+      <span class="em">💻</span>
+      <div class="txt"><b>EXPLORA</b><span>Información general sobre tu carrera y malla curricular</span></div>
+      <span class="flecha">&rsaquo;</span>
+    </div>
+    <div class="ayuda-item">
+      <span class="em">🔄</span>
+      <div class="txt"><b>RESPALDAR DATOS</b><span>Exporta o importa tu información</span></div>
+      <span class="flecha" onclick="exportarDatos()" style="cursor:pointer;">&rsaquo;</span>
+    </div>
+    <div class="ayuda-item" onclick="document.getElementById('importFile').click()" style="cursor:pointer;">
+      <span class="em">📥</span>
+      <div class="txt"><b>IMPORTAR RESPALDO</b><span>Restaura tu información desde un archivo</span></div>
+      <span class="flecha">&rsaquo;</span>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importarDatos(event)">
+
+    <div class="ayuda-item" onclick="resetearDatos()" style="cursor:pointer;">
+      <span class="em">🗑️</span>
+      <div class="txt"><b>REINICIAR DATOS</b><span>Borra todo y vuelve a empezar</span></div>
+      <span class="flecha">&rsaquo;</span>
+    </div>
+
+    <div class="ayuda-banner">
+      <span class="em">❤️</span>
+      <div><b>App de prueba personal</b><span>Datos guardados solo en este dispositivo</span></div>
+      <span class="flecha">&rsaquo;</span>
+    </div>
+  </div>
+
+  <!-- ============ PERFIL ============ -->
+  <div class="pantalla" id="pantalla-perfil">
+    <div class="perfil-banner">
+      <div class="perfil-avatar">🎓</div>
+    </div>
+    <div class="perfil-info">
+      <div class="perfil-nombre titulo" id="perfilNombre">CARLOS</div>
+      <div class="perfil-carrera">INGENIERÍA CIVIL EPE</div>
+      <div class="perfil-campus">📍 Campus Monterrico</div>
+    </div>
+    <div class="perfil-codigo">
+      <div>Malla curricular: <b>202202</b></div>
+      <div>Total créditos carrera: <b>200</b></div>
+      <div>Créditos obligatorios: <b>170</b> · Electivos: <b>30</b></div>
+    </div>
+
+    <div class="form-group">
+      <label>Editar nombre</label>
+      <input type="text" id="perfilNombreInput" oninput="actualizarNombre()">
+    </div>
+
+    <button class="btn-outline-rojo" onclick="cerrarSesion()">Cerrar Sesión</button>
+  </div>
+
+  <!-- ============ NAVBAR ============ -->
+  <div class="navbar" id="navbar" style="display:none;">
+    <button class="nav-item activo" data-tab="inicio" onclick="irA('inicio')">
+      <span class="icn">🏠</span>Inicio
+    </button>
+    <button class="nav-item" data-tab="academico" onclick="irA('academico')">
+      <span class="icn">🎓</span>Académico
+    </button>
+    <button class="nav-item" data-tab="ayuda" onclick="irA('ayuda')">
+      <span class="icn">💬</span>Ayuda
+    </button>
+    <button class="nav-item" data-tab="perfil" onclick="irA('perfil')">
+      <span class="icn">👤</span>Perfil
+    </button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="malla.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
