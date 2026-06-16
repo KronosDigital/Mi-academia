@@ -26,7 +26,7 @@ function datosPorDefecto(){
     };
   });
   return {
-    nombre: 'Carlos',
+    nombre: 'Carlos Antonio',
     sesionIniciada: false,
     cursos: cursos,
     pagos: [
@@ -55,6 +55,7 @@ function cargarDatos(){
       });
       if(!parsed.pagos) parsed.pagos = datosPorDefecto().pagos;
       if(!parsed.comprobantes) parsed.comprobantes = datosPorDefecto().comprobantes;
+      if(parsed.nombre === 'Carlos') parsed.nombre = 'Carlos Antonio';
       return parsed;
     }
   }catch(e){ console.error('Error cargando datos', e); }

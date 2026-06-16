@@ -57,8 +57,8 @@
   .saludo .hola{color:var(--rojo);font-size:18px;text-transform:none;font-weight:400;font-family:'Inter',sans-serif;}
   .saludo .nombre{color:var(--rojo);}
   .saludo p{margin:6px 0 0;color:var(--gris-texto);font-size:14px;text-transform:none;font-weight:400;font-family:'Inter',sans-serif;}
-  .saludo-img{width:90px;height:90px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-  .saludo-img img{width:100%;height:100%;object-fit:contain;}
+  .saludo-img{width:180px;height:180px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:var(--fondo);border-radius:12px;overflow:hidden;}
+  .saludo-img img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;}
 
   .card{background:#fff;border-radius:18px;margin:0 16px 16px;padding:18px;box-shadow:0 2px 10px rgba(20,20,40,.04);}
   .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -189,11 +189,12 @@
   .perfil-banner{height:130px;background:linear-gradient(135deg,#C9CEF5,#E3E6FB);position:relative;display:flex;align-items:flex-end;justify-content:center;}
   .perfil-avatar{width:110px;height:110px;border-radius:50%;background:#D9DCEC;border:5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:46px;position:absolute;bottom:-50px;overflow:hidden;}
   .perfil-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-  .avatar-fallback{display:flex;align-items:center;justify-content:center;width:100%;height:100%;}
+  .avatar-fallback{display:none;align-items:center;justify-content:center;width:100%;height:100%;}
   .perfil-info{text-align:center;padding:64px 24px 0;}
   .perfil-nombre{color:var(--rojo);font-size:20px;margin-bottom:4px;}
   .perfil-carrera{font-size:14px;color:#5C6470;margin-bottom:10px;font-weight:600;}
-  .perfil-campus{font-size:13px;color:#5C6470;margin-bottom:14px;text-transform:none;font-family:'Inter',sans-serif;}
+  .perfil-campus{font-size:13px;color:#5C6470;margin-bottom:8px;text-transform:none;font-family:'Inter',sans-serif;}
+  .perfil-correo{font-size:13px;color:var(--morado);font-weight:600;margin-bottom:14px;text-transform:none;font-family:'Inter',sans-serif;background:var(--morado-claro);display:inline-block;padding:6px 14px;border-radius:8px;}
   .perfil-codigo{background:var(--morado-claro);border-radius:12px;padding:12px;font-size:13px;color:#444;margin:0 16px 16px;}
   .perfil-codigo div{margin:4px 0;}
   .perfil-codigo b{color:var(--negro);}
@@ -673,11 +674,13 @@
     </div>
     </div>
     <div class="perfil-info">
-      <div class="perfil-nombre titulo" id="perfilNombre">CARLOS</div>
+      <div class="perfil-nombre titulo" id="perfilNombre">CARLOS ANTONIO V*** C***</div>
       <div class="perfil-carrera">INGENIERÍA CIVIL EPE</div>
       <div class="perfil-campus">📍 Campus Monterrico</div>
+      <div class="perfil-correo">U201424911@upc.edu.pe</div>
     </div>
     <div class="perfil-codigo">
+      <div>Código de alumno: <b>U201424911</b></div>
       <div>Malla curricular: <b>202202</b></div>
       <div>Total créditos carrera: <b>200</b></div>
       <div>Créditos obligatorios: <b>170</b> · Electivos: <b>30</b></div>
