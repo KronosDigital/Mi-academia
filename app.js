@@ -6,7 +6,8 @@
 const STORAGE_KEY = 'miAcademiaData_v1';
 const TABS_PRINCIPALES = ['inicio','academico','ayuda','perfil'];
 const NAV_MAP = { inicio:'inicio', academico:'academico', situacion:'academico', historial:'academico',
-                   cursos:'academico', detalle:'academico', horario:'inicio', ayuda:'ayuda', perfil:'perfil' };
+                   cursos:'academico', detalle:'academico', horario:'inicio', ayuda:'ayuda', perfil:'perfil',
+                   finanzas:'inicio', pagosPendientes:'inicio', comprobantes:'inicio', facturacion:'inicio' };
 
 let DATA = null;
 let cursoActualId = null;
@@ -19,13 +20,23 @@ function datosPorDefecto(){
       estado: 'pendiente', // pendiente | cursando | aprobado | desaprobado
       promedio: null,
       inasistencias: 0,
-      notas: { DD1:null, EB1:null, TB1:null, TB2:null }
+      notas: { DD1:null, EB1:null, TB1:null, TB2:null },
+      dia: null, // 'Lunes'..'Sabado'
+      horaInicio: null // '19:00'
     };
   });
   return {
     nombre: 'Carlos',
     sesionIniciada: false,
-    cursos: cursos
+    cursos: cursos,
+    pagos: [
+      { id:'p1', carrera:'Ingeniería Civil EPE', monto:1090.71, estado:'vencido', fechaVencimiento:'2026-06-16' },
+      { id:'p2', carrera:'Ingeniería Civil EPE', monto:1087.90, estado:'vencido', fechaVencimiento:'2026-07-16' }
+    ],
+    comprobantes: [
+      { id:'cp1', estado:'cobrado', importe:285.00, fecha:'2026-03-11', tipo:'Boleta' },
+      { id:'cp2', estado:'cobrado', importe:1401.50, fecha:'2026-03-07', tipo:'Boleta' }
+    ]
   };
 }
 
@@ -37,9 +48,13 @@ function cargarDatos(){
       // Asegurar que existan entradas para todos los cursos de la malla (por si se agregan)
       MALLA.forEach(c=>{
         if(!parsed.cursos[c.id]){
-          parsed.cursos[c.id] = { estado:'pendiente', promedio:null, inasistencias:0, notas:{DD1:null,EB1:null,TB1:null,TB2:null} };
+          parsed.cursos[c.id] = { estado:'pendiente', promedio:null, inasistencias:0, notas:{DD1:null,EB1:null,TB1:null,TB2:null}, dia:null, horaInicio:null };
         }
+        if(parsed.cursos[c.id].dia === undefined) parsed.cursos[c.id].dia = null;
+        if(parsed.cursos[c.id].horaInicio === undefined) parsed.cursos[c.id].horaInicio = null;
       });
+      if(!parsed.pagos) parsed.pagos = datosPorDefecto().pagos;
+      if(!parsed.comprobantes) parsed.comprobantes = datosPorDefecto().comprobantes;
       return parsed;
     }
   }catch(e){ console.error('Error cargando datos', e); }
@@ -68,6 +83,10 @@ function irA(pantalla){
   if(pantalla==='historial') renderHistorial();
   if(pantalla==='cursos') { popularSelectCiclos(); renderCursosLista(); }
   if(pantalla==='perfil') renderPerfil();
+  if(pantalla==='pagosPendientes') renderPagos();
+  if(pantalla==='comprobantes') renderComprobantes();
+  if(pantalla==='facturacion') renderFacturacion();
+  if(pantalla==='horario') renderHorario();
 
   window.scrollTo(0,0);
 }
@@ -327,10 +346,37 @@ function abrirDetalle(cursoId){
   document.getElementById('notaTB1').value = cd.notas.TB1 ?? '';
   document.getElementById('notaTB2').value = cd.notas.TB2 ?? '';
 
+  document.getElementById('dcDia').value = cd.dia || '';
+  poblarHorasSegunDia();
+  document.getElementById('dcHora').value = cd.horaInicio || '';
+
   calcularPromedio(false);
   actualizarVistaDetalle();
   irA('detalle');
 }
+
+function poblarHorasSegunDia(){
+  const dia = document.getElementById('dcDia').value;
+  const sel = document.getElementById('dcHora');
+  const horaActual = sel.value;
+  sel.innerHTML = '<option value="">--:--</option>';
+  let horas = [];
+  if(dia === 'Sabado'){
+    horas = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00'];
+  } else if(dia){
+    horas = ['19:00','20:00','21:00','22:00'];
+  }
+  horas.forEach(h=>{
+    const opt = document.createElement('option');
+    opt.value = h; opt.textContent = h;
+    sel.appendChild(opt);
+  });
+  sel.value = horaActual;
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  const diaSel = document.getElementById('dcDia');
+  if(diaSel) diaSel.addEventListener('change', poblarHorasSegunDia);
+});
 
 function actualizarVistaDetalle(){
   // si está aprobado, sugerir guardar promedio automáticamente si hay notas completas
@@ -366,6 +412,8 @@ function guardarDetalle(promedioOverride){
 
   cd.inasistencias = parseInt(document.getElementById('dcInasistencias').value) || 0;
   cd.estado = document.getElementById('dcEstado').value;
+  cd.dia = document.getElementById('dcDia').value || null;
+  cd.horaInicio = document.getElementById('dcHora').value || null;
 
   const dd1 = document.getElementById('notaDD1').value;
   const eb1 = document.getElementById('notaEB1').value;
@@ -446,7 +494,172 @@ function resetearDatos(){
   }
 }
 
-// ---------------- Init ----------------
+// ---------------- Horario (cuadrícula) ----------------
+const COLORES_CURSO = ['#E30613','#3F2DA5','#3FB54A','#FF9D2E','#1E90C8','#C2185B','#7B5E00','#00897B'];
+
+function renderHorario(){
+  const dias = ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'];
+  const diasLabel = {Lunes:'Lunes',Martes:'Martes',Miercoles:'Miércoles',Jueves:'Jueves',Viernes:'Viernes',Sabado:'Sábado'};
+  const horasSemana = ['19:00','20:00','21:00','22:00'];
+  const horasSabado = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00'];
+  const todasHoras = [...new Set([...horasSemana, ...horasSabado])].sort();
+
+  const cursosConHorario = MALLA.filter(c => DATA.cursos[c.id].estado==='cursando' && DATA.cursos[c.id].dia && DATA.cursos[c.id].horaInicio);
+
+  // Asignar color por curso
+  const colorPorCurso = {};
+  cursosConHorario.forEach((c,i)=>{ colorPorCurso[c.id] = COLORES_CURSO[i % COLORES_CURSO.length]; });
+
+  const thead = document.querySelector('#tablaHorario thead');
+  const tbody = document.querySelector('#tablaHorario tbody');
+
+  thead.innerHTML = `<tr><th>Hora</th>${dias.map(d=>`<th>${diasLabel[d]}</th>`).join('')}</tr>`;
+
+  let filas = '';
+  todasHoras.forEach(hora=>{
+    filas += `<tr><td class="hora-col">${hora}-${horaMasUna(hora)}</td>`;
+    dias.forEach(dia=>{
+      const valido = dia==='Sabado' ? horasSabado.includes(hora) : horasSemana.includes(hora);
+      if(!valido){ filas += `<td></td>`; return; }
+      const curso = cursosConHorario.find(c => DATA.cursos[c.id].dia===dia && DATA.cursos[c.id].horaInicio===hora);
+      if(curso){
+        const color = colorPorCurso[curso.id];
+        filas += `<td><div class="clase-celda" style="border-left:3px solid ${color};"><b>${curso.codigo}</b>${curso.nombre.slice(0,16)}${curso.nombre.length>16?'…':''}</div></td>`;
+      } else {
+        filas += `<td></td>`;
+      }
+    });
+    filas += `</tr>`;
+  });
+  tbody.innerHTML = filas;
+
+  // Leyenda
+  const leyenda = document.getElementById('leyendaHorario');
+  if(cursosConHorario.length === 0){
+    leyenda.innerHTML = `<div class="vacio" style="padding:30px 10px;"><span class="em">📅</span>No tienes cursos marcados como "Cursando" con día/hora asignado.<br>Ve a un curso → Estado: Cursando → asigna día y hora.</div>`;
+  } else {
+    leyenda.innerHTML = cursosConHorario.map(c=>{
+      const cd = DATA.cursos[c.id];
+      return `<div class="leyenda-item"><span class="leyenda-dot" style="background:${colorPorCurso[c.id]}"></span>
+        <span><b>${c.codigo}</b> — ${c.nombre} (${diasLabel[cd.dia]} ${cd.horaInicio})</span></div>`;
+    }).join('');
+  }
+}
+
+function horaMasUna(hora){
+  const h = parseInt(hora.split(':')[0]) + 1;
+  return (h<10?'0':'')+h+':00';
+}
+
+// ---------------- Finanzas: Pagos pendientes ----------------
+function renderPagos(){
+  const cont = document.getElementById('listaPagos');
+  if(DATA.pagos.length === 0){
+    cont.innerHTML = `<div class="vacio"><span class="em">💳</span>No tienes pagos pendientes registrados.</div>`;
+  } else {
+    cont.innerHTML = DATA.pagos.map(p=>`
+      <div class="pago-card">
+        <div class="top">
+          <div class="carrera-pago">${p.carrera}</div>
+          <div class="monto">S/ ${p.monto.toFixed(2)}</div>
+        </div>
+        <span class="estado-pago ${p.estado}">${p.estado}</span>
+        <div class="fv">FV: ${formatearFecha(p.fechaVencimiento)}</div>
+        <div class="pago-edit-row">
+          <input type="number" step="0.01" value="${p.monto}" onchange="editarPago('${p.id}','monto',this.value)" placeholder="Monto">
+          <select onchange="editarPago('${p.id}','estado',this.value)">
+            <option value="vencido" ${p.estado==='vencido'?'selected':''}>Vencido</option>
+            <option value="pendiente" ${p.estado==='pendiente'?'selected':''}>Pendiente</option>
+            <option value="pagado" ${p.estado==='pagado'?'selected':''}>Pagado</option>
+          </select>
+          <input type="date" value="${p.fechaVencimiento}" onchange="editarPago('${p.id}','fechaVencimiento',this.value)">
+        </div>
+        <button class="btn-eliminar-mini" onclick="eliminarPago('${p.id}')">Eliminar</button>
+      </div>`).join('');
+  }
+  const total = DATA.pagos.filter(p=>p.estado!=='pagado').reduce((s,p)=>s+p.monto,0);
+  document.getElementById('totalDeuda').textContent = 'S/ ' + total.toFixed(2);
+}
+
+function editarPago(id, campo, valor){
+  const p = DATA.pagos.find(x=>x.id===id);
+  if(!p) return;
+  p[campo] = campo==='monto' ? parseFloat(valor)||0 : valor;
+  guardarDatos();
+  renderPagos();
+}
+
+function agregarPago(){
+  const id = 'p'+Date.now();
+  DATA.pagos.push({ id, carrera:'Ingeniería Civil EPE', monto:0, estado:'pendiente', fechaVencimiento: new Date().toISOString().slice(0,10) });
+  guardarDatos();
+  renderPagos();
+}
+
+function eliminarPago(id){
+  DATA.pagos = DATA.pagos.filter(p=>p.id!==id);
+  guardarDatos();
+  renderPagos();
+}
+
+// ---------------- Finanzas: Comprobantes ----------------
+function renderComprobantes(){
+  const cont = document.getElementById('listaComprobantes');
+  if(DATA.comprobantes.length === 0){
+    cont.innerHTML = `<div class="vacio"><span class="em">📄</span>No tienes comprobantes registrados.</div>`;
+    return;
+  }
+  cont.innerHTML = DATA.comprobantes.map(c=>`
+    <div class="comprobante-row">
+      <select onchange="editarComprobante('${c.id}','estado',this.value)">
+        <option value="cobrado" ${c.estado==='cobrado'?'selected':''}>Cobrado</option>
+        <option value="anulado" ${c.estado==='anulado'?'selected':''}>Anulado</option>
+        <option value="pendiente" ${c.estado==='pendiente'?'selected':''}>Pendiente</option>
+      </select>
+      <input class="imp" type="number" step="0.01" value="${c.importe}" onchange="editarComprobante('${c.id}','importe',this.value)" placeholder="S/">
+      <input class="fecha" type="date" value="${c.fecha}" onchange="editarComprobante('${c.id}','fecha',this.value)">
+      <button class="btn-eliminar-mini" onclick="eliminarComprobante('${c.id}')">✕</button>
+    </div>`).join('');
+}
+
+function editarComprobante(id, campo, valor){
+  const c = DATA.comprobantes.find(x=>x.id===id);
+  if(!c) return;
+  c[campo] = campo==='importe' ? parseFloat(valor)||0 : valor;
+  guardarDatos();
+  renderComprobantes();
+}
+
+function agregarComprobante(){
+  const id = 'cp'+Date.now();
+  DATA.comprobantes.push({ id, estado:'cobrado', importe:0, fecha:new Date().toISOString().slice(0,10), tipo:'Boleta' });
+  guardarDatos();
+  renderComprobantes();
+}
+
+function eliminarComprobante(id){
+  DATA.comprobantes = DATA.comprobantes.filter(c=>c.id!==id);
+  guardarDatos();
+  renderComprobantes();
+}
+
+function formatearFecha(iso){
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ---------------- Finanzas: Facturación (fija, informativa) ----------------
+function renderFacturacion(){
+  const cuotas = [
+    {n:1, pub:'23/2/2026', venc:'6/3/2026'},
+    {n:2, pub:'30/3/2026', venc:'6/4/2026'},
+    {n:3, pub:'23/4/2026', venc:'30/4/2026'},
+    {n:4, pub:'23/5/2026', venc:'30/5/2026'},
+    {n:5, pub:'23/6/2026', venc:'30/6/2026'},
+  ];
+  document.getElementById('tablaFacturacion').innerHTML = cuotas.map(c=>
+    `<tr><td>${c.n}</td><td>${c.pub}</td><td>${c.venc}</td></tr>`).join('');
+}
 window.addEventListener('DOMContentLoaded', ()=>{
   DATA = cargarDatos();
   document.getElementById('loginNombre').value = DATA.nombre;
