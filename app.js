@@ -166,7 +166,7 @@ function dibujarDonut(containerId, pct, color, size=84){
   const offset = c - (pct/100)*c;
   const svg = `
     <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#1E90C8" stroke-width="${stroke}"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#5BC8E8" stroke-width="${stroke}"/>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
         stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
     </svg>`;
@@ -205,28 +205,28 @@ function renderSituacion(){
 
   // Donut asignaturas
   const pctAsig = r.totalAsig ? (r.asigCumplidas/r.totalAsig*100) : 0;
-  dibujarDonut('donutAsig', pctAsig, '#3FB54A');
+  dibujarDonut('donutAsig', pctAsig, '#6FD89A');
   document.getElementById('donutAsigPct').textContent = pctAsig.toFixed(0)+'%';
   document.getElementById('asigCumplido').textContent = r.asigCumplidas;
   document.getElementById('asigTotal').textContent = r.totalAsig;
 
   // Donut créditos obligatorios
   const pctCred = r.totalCredObligatorios ? (r.credCumplidos/r.totalCredObligatorios*100) : 0;
-  dibujarDonut('donutCred', pctCred, '#3FB54A');
+  dibujarDonut('donutCred', pctCred, '#6FD89A');
   document.getElementById('donutCredPct').textContent = pctCred.toFixed(2)+'%';
   document.getElementById('credCumplido').textContent = r.credCumplidos;
   document.getElementById('credTotal').textContent = r.totalCredObligatorios;
 
   // Donut electivos
   const pctElec = r.totalCredElectivos ? (r.credElectivosCumplidos/r.totalCredElectivos*100) : 0;
-  dibujarDonut('donutElec', Math.min(pctElec,100), '#3FB54A', 140);
+  dibujarDonut('donutElec', Math.min(pctElec,100), '#6FD89A', 140);
   document.getElementById('donutElecPct').textContent = pctElec.toFixed(2)+'%';
   document.getElementById('elecCumplido').textContent = r.credElectivosCumplidos;
   document.getElementById('elecTotal').textContent = r.totalCredElectivos;
 
   // Donut total carrera
   const pctTotal = r.totalCredCarrera ? (r.credTotalCumplido/r.totalCredCarrera*100) : 0;
-  dibujarDonut('donutTotal', pctTotal, '#3FB54A', 140);
+  dibujarDonut('donutTotal', pctTotal, '#6FD89A', 140);
   document.getElementById('donutTotalPct').textContent = pctTotal.toFixed(1)+'%';
   document.getElementById('totCumplido').textContent = r.credTotalCumplido;
   document.getElementById('totTotal').textContent = r.totalCredCarrera;

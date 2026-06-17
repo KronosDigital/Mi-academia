@@ -23,8 +23,9 @@
     --verde:#3FB54A;
     --verde-claro:#D9F2DC;
     --naranja:#FF9D2E;
-    --celeste:#1E90C8;
-    --celeste-claro:#DDF0F9;
+    --celeste:#5BC8E8;
+    --celeste-claro:#E8F7FC;
+    --verde-pastel:#6FD89A;
     --fondo:#F4F5FA;
     --gris-texto:#5C6470;
     --gris-claro:#E6E8F0;
@@ -128,18 +129,19 @@
   .chip{background:var(--morado);color:#fff;font-weight:700;border-radius:8px;padding:2px 10px;font-size:12px;}
   .chip-out{border:1px solid var(--morado);color:var(--morado);border-radius:8px;padding:2px 10px;font-size:11px;font-weight:700;}
 
-  .resumen-title{padding:6px 16px 10px;font-size:15px;color:var(--negro);}
+  .resumen-title{padding:6px 16px 10px;font-size:15px;color:#6B7280;}
   .donuts-row{display:flex;gap:12px;padding:0 16px 16px;}
   .donut-card{flex:1;background:#fff;border-radius:16px;padding:16px 12px;text-align:center;box-shadow:0 2px 10px rgba(20,20,40,.04);}
   .donut-card-wide{background:#fff;border-radius:16px;margin:0 16px 16px;padding:24px 16px;text-align:center;box-shadow:0 2px 10px rgba(20,20,40,.04);}
   .donut-wrap{width:84px;height:84px;margin:0 auto 10px;position:relative;}
   .donut-wrap-lg{width:140px;height:140px;margin:0 auto 14px;position:relative;}
   .donut-wrap-lg svg{transform:rotate(-90deg);}
-  .donut-pct-lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;}
+  .donut-pct-lg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;color:var(--celeste);}
   .donut-wrap svg{transform:rotate(-90deg);}
-  .donut-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;}
+  .donut-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:700;font-size:16px;color:var(--celeste);}
   .donut-label{font-weight:700;font-size:14px;font-family:'Inter',sans-serif;text-transform:none;margin-bottom:4px;}
-  .donut-detail{font-size:11px;color:#777;text-transform:none;font-family:'Inter',sans-serif;}
+  .donut-detail{font-size:11px;color:#9CA3AF;text-transform:none;font-family:'Inter',sans-serif;}
+  .donut-detail b{color:var(--negro);font-weight:700;}
   .donut-detail .dot-leg{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:4px;}
 
   .info-box{background:var(--morado-claro);border-radius:16px;margin:0 16px 16px;padding:16px;}
@@ -389,13 +391,13 @@
       <div class="donut-card">
         <div class="donut-wrap"><div id="donutAsig"></div><div class="donut-pct" id="donutAsigPct">0%</div></div>
         <div class="donut-label">Asignaturas</div>
-        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="asigCumplido">0</b></div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde-pastel)"></span>Cumplido: <b id="asigCumplido">0</b></div>
         <div class="donut-detail"><span class="dot-leg" style="background:var(--celeste)"></span>A cumplir: <b id="asigTotal">50</b></div>
       </div>
       <div class="donut-card">
         <div class="donut-wrap"><div id="donutCred"></div><div class="donut-pct" id="donutCredPct">0%</div></div>
         <div class="donut-label">Créditos</div>
-        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="credCumplido">0</b></div>
+        <div class="donut-detail"><span class="dot-leg" style="background:var(--verde-pastel)"></span>Cumplido: <b id="credCumplido">0</b></div>
         <div class="donut-detail"><span class="dot-leg" style="background:var(--celeste)"></span>A cumplir: <b id="credTotal">170</b></div>
       </div>
     </div>
@@ -404,7 +406,7 @@
     <div class="donut-card-wide">
       <div class="donut-wrap-lg"><div id="donutElec"></div><div class="donut-pct-lg" id="donutElecPct">0%</div></div>
       <div class="donut-label">Créditos</div>
-      <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="elecCumplido">0</b></div>
+      <div class="donut-detail"><span class="dot-leg" style="background:var(--verde-pastel)"></span>Cumplido: <b id="elecCumplido">0</b></div>
       <div class="donut-detail"><span class="dot-leg" style="background:var(--celeste)"></span>Mínimo: <b id="elecTotal">30</b></div>
     </div>
 
@@ -412,7 +414,7 @@
     <div class="donut-card-wide">
       <div class="donut-wrap-lg"><div id="donutTotal"></div><div class="donut-pct-lg" id="donutTotalPct">0%</div></div>
       <div class="donut-label">Créditos totales</div>
-      <div class="donut-detail"><span class="dot-leg" style="background:var(--verde)"></span>Cumplido: <b id="totCumplido">0</b></div>
+      <div class="donut-detail"><span class="dot-leg" style="background:var(--verde-pastel)"></span>Cumplido: <b id="totCumplido">0</b></div>
       <div class="donut-detail"><span class="dot-leg" style="background:var(--celeste)"></span>A cumplir: <b id="totTotal">200</b></div>
     </div>
 
