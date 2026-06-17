@@ -190,9 +190,8 @@ function renderInicio(){
     return;
   }
   const curso = lista[0];
-  const badgeClass = curso.tipo==='Electivo' ? 'badge-virtual' : 'badge-virtual';
   cont.innerHTML = `
-    <span class="badge-virtual">CICLO ${curso.ciclo}</span>
+    <span class="badge-tipo">CICLO ${curso.ciclo}</span>
     <div class="curso-nombre">${curso.nombre}</div>
     <a class="ver-detalle" href="#" onclick="abrirDetalle('${curso.id}');return false;">Ver más detalle &#9662;</a>`;
   dots.innerHTML = lista.slice(0,6).map((c,i)=>`<span class="dot ${i===0?'activo':''}"></span>`).join('');
@@ -267,7 +266,7 @@ function renderHistorial(){
             <div style="font-size:13px;color:#5C6470;">Código: ${c.codigo} · Créditos: ${c.creditos}</div>
             <div style="margin-top:6px;">
               <span class="estado-badge ${estadoClass}">${estadoTxt}</span>
-              ${cd.promedio!==null ? `<span style="margin-left:8px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--morado);">Nota: ${cd.promedio.toFixed(2)}</span>` : ''}
+              ${cd.promedio!==null ? `<span style="margin-left:8px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--morado);">Nota: ${cd.promedio}</span>` : ''}
             </div>
           </div>
         </div>`;
@@ -306,7 +305,7 @@ function renderCursosLista(){
 
   cont.innerHTML = cursos.map(c=>{
     const cd = DATA.cursos[c.id];
-    const badge = c.tipo==='Electivo' ? 'badge-virtual' : 'badge-virtual';
+    const badge = 'badge-tipo';
     const badgeTxt = c.tipo;
     let estadoClass='estado-pendiente', estadoTxt='PENDIENTE';
     if(cd.estado==='aprobado'){estadoClass='estado-aprobado';estadoTxt='APROBADO';}
@@ -321,7 +320,7 @@ function renderCursosLista(){
           <div class="codigo">${c.codigo} · ${c.creditos} créditos</div>
           <div style="margin-top:8px;">
             <span class="estado-badge ${estadoClass}">${estadoTxt}</span>
-            ${cd.promedio!==null ? `<span style="margin-left:8px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--morado);font-size:13px;">${cd.promedio.toFixed(2)}</span>` : ''}
+            ${cd.promedio!==null ? `<span style="margin-left:8px;font-family:'Oswald',sans-serif;font-weight:700;color:var(--morado);font-size:13px;">${cd.promedio}</span>` : ''}
           </div>
         </div>
         <span class="flecha">&rsaquo;</span>
@@ -335,7 +334,7 @@ function abrirDetalle(cursoId){
   const c = MALLA.find(x=>x.id===cursoId);
   const cd = DATA.cursos[cursoId];
 
-  document.getElementById('dcBadge').innerHTML = `<span class="badge-virtual">${c.tipo}</span>`;
+  document.getElementById('dcBadge').innerHTML = `<span class="badge-tipo">${c.tipo}</span>`;
   document.getElementById('dcTitulo').textContent = c.nombre;
   document.getElementById('dcCreditos').textContent = c.creditos;
   document.getElementById('dcCiclo').textContent = c.ciclo;
@@ -398,7 +397,7 @@ function calcularPromedio(guardar=true){
 
   let promedio = null;
   if(vals.every(x=>!isNaN(x.v))){
-    promedio = vals.reduce((s,x)=>s + x.v*x.w, 0);
+    promedio = Math.round(vals.reduce((s,x)=>s + x.v*x.w, 0));
   }
 
   document.getElementById('dcPromedioFinal').textContent = promedio!==null ? promedio.toFixed(2) : '—';
