@@ -166,7 +166,7 @@ function dibujarDonut(containerId, pct, color, size=84){
   const offset = c - (pct/100)*c;
   const svg = `
     <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#E6E8F0" stroke-width="${stroke}"/>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#1E90C8" stroke-width="${stroke}"/>
       <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
         stroke-dasharray="${c}" stroke-dashoffset="${offset}" stroke-linecap="round"/>
     </svg>`;
@@ -226,7 +226,7 @@ function renderSituacion(){
 
   // Donut total carrera
   const pctTotal = r.totalCredCarrera ? (r.credTotalCumplido/r.totalCredCarrera*100) : 0;
-  dibujarDonut('donutTotal', pctTotal, '#3F2DA5', 140);
+  dibujarDonut('donutTotal', pctTotal, '#3FB54A', 140);
   document.getElementById('donutTotalPct').textContent = pctTotal.toFixed(1)+'%';
   document.getElementById('totCumplido').textContent = r.credTotalCumplido;
   document.getElementById('totTotal').textContent = r.totalCredCarrera;
