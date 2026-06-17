@@ -1,6 +1,6 @@
 {
-  "name": "Mi Academia",
-  "short_name": "Mi Academia",
+  "name": "Mi UPC",
+  "short_name": "Mi UPC",
   "description": "App personal de seguimiento académico",
   "start_url": "./index.html",
   "display": "standalone",
